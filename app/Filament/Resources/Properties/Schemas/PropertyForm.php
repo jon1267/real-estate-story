@@ -3,10 +3,13 @@
 namespace App\Filament\Resources\Properties\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class PropertyForm
@@ -15,6 +18,7 @@ class PropertyForm
     {
         return $schema
             ->components([
+                // time 1:09:40
                 TextInput::make('title')
                     ->required(),
                 Textarea::make('description')
@@ -78,22 +82,33 @@ class PropertyForm
                 Toggle::make('furnished')
                     ->required(),
                 Toggle::make('parking')
-                    // time 1:01:50
+                    ->live()
                     ->required(),
                 TextInput::make('parking_spaces')
+                    ->visible(fn (Get $get): bool => $get('parking'))
                     ->numeric(),
-                TextInput::make('features'),
-                TextInput::make('images'),
+                TagsInput::make('features')
+                    ->helperText('Add features like garden, pool, gym, etc.')
+                    ->columnSpanFull(),
+                FileUpload::make('images')
+                    ->multiple()
+                    ->image()
+                    ->maxFiles(10)
+                    ->disk('public')
+                    ->directory('properties-images')
+                    ->columnSpanFull(),
                 TextInput::make('slug')
-                    ->required(),
+                    ->readOnly(),
                 TextInput::make('meta_title'),
                 Textarea::make('meta_description')
                     ->columnSpanFull(),
                 Toggle::make('is_featured')
+                    ->live()
                     ->required(),
                 Toggle::make('is_active')
                     ->required(),
-                DateTimePicker::make('featured_until'),
+                DateTimePicker::make('featured_until')
+                    ->visible(fn (Get $get): bool => $get('is_featured')),
                 TextInput::make('contact_name'),
                 TextInput::make('contact_phone')
                     ->tel(),
