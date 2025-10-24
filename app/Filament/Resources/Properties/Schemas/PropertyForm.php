@@ -93,7 +93,7 @@ class PropertyForm
                 FileUpload::make('images')
                     ->multiple()
                     ->image()
-                    ->maxFiles(10)
+                    ->maxFiles(5)
                     ->disk('public')
                     ->directory('properties-images')
                     ->columnSpanFull(),
@@ -111,8 +111,10 @@ class PropertyForm
                     ->visible(fn (Get $get): bool => $get('is_featured')),
                 TextInput::make('contact_name'),
                 TextInput::make('contact_phone')
+                    ->required()
                     ->tel(),
                 TextInput::make('contact_email')
+                    ->required()
                     ->email(),
             ]);
     }
